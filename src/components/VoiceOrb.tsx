@@ -29,21 +29,21 @@ const VoiceOrb = ({ isActive, status, currentAgent, onStart, onStop }: VoiceOrbP
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Outer pulse rings */}
+      {/* Outer pulse rings - reduced from 4 to 2 for performance */}
       <AnimatePresence>
         {isActive && (
           <>
-            {[0, 1, 2, 3].map((i) => (
+            {[0, 1].map((i) => (
               <motion.div
                 key={i}
-                className="absolute w-48 h-48 rounded-full border border-primary/20"
-                initial={{ scale: 1, opacity: 0.6 }}
-                animate={{ scale: 3, opacity: 0 }}
+                className="absolute w-48 h-48 rounded-full border border-primary/30"
+                initial={{ scale: 1, opacity: 0.5 }}
+                animate={{ scale: 2.5, opacity: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: 3,
+                  duration: 2,
                   repeat: Infinity,
-                  delay: i * 0.75,
+                  delay: i * 1,
                   ease: "easeOut",
                 }}
               />

@@ -16,7 +16,11 @@ const DEMO_ASSISTANT_ID = "c8951f28-76ac-4c9e-ba73-b51fb6b8af6f"; // Demo bot wi
 
 const Index = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [logs, setLogs] = useState<LogEntry[]>([
+    { id: "1", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }), type: "SYSTEM", message: "Voice system initialized" },
+    { id: "2", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }), type: "API", message: "Backend connection established" },
+  ]);
+  const [transcript, setTranscript] = useState<{ role: "user" | "assistant"; text: string }[]>([]);
   const [showEmail, setShowEmail] = useState(false);
   const [currentAssistant, setCurrentAssistant] = useState<"intro" | "demo">("demo");
 
@@ -110,21 +114,29 @@ const Index = () => {
   const { status, startCall, stopCall } = useVapi({
     onCallStart: () => {
       addLog("SYSTEM", `Connected to ${currentAssistant === "intro" ? "Zayup AI" : "Ava"}`);
+      setTranscript([]);
     },
     onCallEnd: () => {
       addLog("SYSTEM", "Call ended");
     },
     onSpeechStart: () => {
-      addLog("SYSTEM", "Listening...");
+      // Don't spam logs with listening messages
     },
     onSpeechEnd: () => {
-      addLog("SYSTEM", "Processing...");
+      addLog("SYSTEM", "Processing speech...");
     },
     onFunctionCall: handleFunctionCall,
     onMessage: (message) => {
-      if (message.type === "transcript" && message.role === "assistant") {
-        const preview = message.transcript?.substring(0, 40) || "";
-        addLog("API", `Response: ${preview}...`);
+      if (message.type === "transcript" && message.transcriptType === "final") {
+        const text = message.transcript || "";
+        if (text.trim()) {
+          setTranscript(prev => [...prev.slice(-20), { role: message.role as "user" | "assistant", text }]);
+          if (message.role === "assistant") {
+            addLog("API", `Ava: ${text.substring(0, 50)}${text.length > 50 ? "..." : ""}`);
+          } else {
+            addLog("API", `User: ${text.substring(0, 50)}${text.length > 50 ? "..." : ""}`);
+          }
+        }
       }
     },
     onError: (error) => {
@@ -264,11 +276,12 @@ const Index = () => {
         </motion.div>
       </main>
 
-      {/* Live Panel - Shows order & logs when active */}
+      {/* Live Panel - Always shows logs, order/transcript when active */}
       <LivePanel
         orderItems={orderItems}
         logs={logs}
         isVisible={isActive}
+        transcript={transcript}
       />
     </div>
   );

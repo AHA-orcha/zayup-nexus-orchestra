@@ -3,10 +3,11 @@ import Vapi from "@vapi-ai/web";
 
 export type VapiStatus = "idle" | "connecting" | "listening" | "processing";
 
-interface VapiMessage {
+export interface VapiMessage {
   type: string;
   role?: string;
   transcript?: string;
+  transcriptType?: "partial" | "final";
   functionCall?: {
     name: string;
     parameters: Record<string, unknown>;

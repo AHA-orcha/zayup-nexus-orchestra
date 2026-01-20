@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Radio, Zap, ArrowRight, Phone, Shield, BarChart3, Cpu, ChevronDown } from "lucide-react";
 import PizzaBolisDemo from "@/components/PizzaBolisDemo";
+import DemoPopup from "@/components/DemoPopup";
 import LivePanel from "@/components/LivePanel";
 import EmailCapture from "@/components/EmailCapture";
 import { OrderItem } from "@/components/OrderSummary";
@@ -21,6 +22,7 @@ const Index = () => {
   const [showEmail, setShowEmail] = useState(false);
   const [currentAssistant, setCurrentAssistant] = useState<"intro" | "demo">("demo");
   const [isDemoExpanded, setIsDemoExpanded] = useState(false);
+  const [showSimulationPopup, setShowSimulationPopup] = useState(false);
 
   const addLog = useCallback((type: LogEntry["type"], message: string) => {
     const timestamp = new Date().toLocaleTimeString([], { 
@@ -155,12 +157,6 @@ const Index = () => {
     setShowEmail(false);
   }, [stopCall]);
 
-  const handleDemoClick = () => {
-    if (!isDemoExpanded) {
-      setIsDemoExpanded(true);
-    }
-  };
-
   const isActive = status !== "idle";
 
   return (
@@ -246,10 +242,7 @@ const Index = () => {
           </div>
 
           {/* Pizza Bolis Demo Window */}
-          <div 
-            className="flex justify-center"
-            onClick={handleDemoClick}
-          >
+          <div className="flex justify-center">
             <PizzaBolisDemo
               isExpanded={isDemoExpanded}
               isActive={isActive}
@@ -257,8 +250,16 @@ const Index = () => {
               orderItems={orderItems}
               onStart={handleStartCall}
               onStop={handleStopCall}
+              onSimulationClick={() => setShowSimulationPopup(true)}
             />
           </div>
+
+          {/* Simulation Popup */}
+          <DemoPopup
+            isOpen={showSimulationPopup}
+            onClose={() => setShowSimulationPopup(false)}
+            onStartRealDemo={handleStartCall}
+          />
 
           {/* Email Capture Overlay */}
           {showEmail && (

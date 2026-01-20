@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
-import { Zap, ArrowRight, Phone, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { Zap, ArrowRight, Phone, ChevronDown, Globe, CheckCircle, Headphones } from "lucide-react";
 import PizzaBolisDemo from "@/components/PizzaBolisDemo";
 import LivePanel from "@/components/LivePanel";
 import EmailCapture from "@/components/EmailCapture";
@@ -159,9 +160,12 @@ const Index = () => {
             <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30">
               <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary" />
             </div>
-            <span className="text-lg md:text-xl font-bold text-foreground tracking-tight">
-              Zayup
-            </span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg md:text-xl font-bold text-foreground tracking-tight">
+                Zayup
+              </span>
+              <span className="text-xs text-primary font-medium">OS</span>
+            </div>
           </div>
 
           <button className="px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-primary text-primary-foreground text-xs md:text-sm font-medium hover:bg-primary/90 transition-colors">
@@ -171,41 +175,93 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 md:pt-32 pb-8 md:pb-16 px-4 md:px-6">
+      <section className="pt-28 md:pt-36 pb-12 md:pb-20 px-4 md:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 md:mb-8">
-            <Phone className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
-            <span className="text-xs md:text-sm font-medium text-primary">Coming Soon</span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
+              Introducing <span className="text-primary font-medium">Zayup OS</span>
+            </p>
+            
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
+              Where Technology Meets
+              <br />
+              <span className="text-primary">Restaurant Efficiency</span>
+            </h1>
+          </motion.div>
           
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
-            Your AI Phone Operator
-          </h1>
-          
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 md:mb-12 leading-relaxed">
-            Never miss an order again. Our voice AI answers calls, takes orders, 
-            and sends them straight to your kitchen — 24/7.
-          </p>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed"
+          >
+            An AI-powered order taker that works for you around the clock. 
+            100% accurate. Multilingual. The first of its kind — built to transform 
+            how pizza restaurants handle phone orders.
+          </motion.p>
+
+          {/* Value Props */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 md:mb-16"
+          >
+            {[
+              { icon: CheckCircle, label: "100% Order Accuracy" },
+              { icon: Globe, label: "Multilingual Support" },
+              { icon: Headphones, label: "24/7 Availability" },
+            ].map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 border border-border/50"
+              >
+                <Icon className="w-4 h-4 text-primary" />
+                <span className="text-sm text-foreground">{label}</span>
+              </div>
+            ))}
+          </motion.div>
 
           {/* Scroll indicator */}
-          <div className="flex flex-col items-center gap-2 text-muted-foreground animate-bounce">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-col items-center gap-2 text-muted-foreground"
+          >
             <span className="text-xs md:text-sm">See it in action</span>
-            <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
-          </div>
+            <ChevronDown className="w-4 h-4 md:w-5 md:h-5 animate-bounce" />
+          </motion.div>
         </div>
       </section>
 
       {/* Demo Section */}
       <section className="py-8 md:py-16 px-4 md:px-6" id="demo">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-6 md:mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-6 md:mb-10"
+          >
             <p className="text-sm md:text-base text-muted-foreground">
-              Tap below to test a live ordering demo
+              Experience a live demo — tap to start a call
             </p>
-          </div>
+          </motion.div>
 
           {/* Pizza Bolis Demo Window */}
-          <div className="flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex justify-center"
+          >
             <PizzaBolisDemo
               isExpanded={isDemoExpanded}
               isActive={isActive}
@@ -214,7 +270,7 @@ const Index = () => {
               onStart={handleStartCall}
               onStop={handleStopCall}
             />
-          </div>
+          </motion.div>
 
           {/* Email Capture Overlay */}
           {showEmail && (
@@ -225,20 +281,75 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Benefits Section */}
+      <section className="py-12 md:py-20 px-4 md:px-6 bg-secondary/10">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10 md:mb-14"
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-3">
+              Replace the overhead. Keep the orders.
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+              No more missed calls, no more order errors, no more staffing headaches for phone lines.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {[
+              {
+                title: "Never Miss a Call",
+                description: "Every call answered instantly, even during rush hours.",
+              },
+              {
+                title: "Zero Order Errors",
+                description: "AI captures every detail — toppings, modifications, special requests.",
+              },
+              {
+                title: "Speaks Their Language",
+                description: "Serve customers in English, Spanish, and more — seamlessly.",
+              },
+            ].map(({ title, description }, index) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="p-5 md:p-6 rounded-2xl bg-card border border-border/50"
+              >
+                <h3 className="text-base md:text-lg font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground">{description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-12 md:py-20 px-4 md:px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">
-            Stop losing orders to missed calls.
+      <section className="py-14 md:py-24 px-4 md:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto text-center"
+        >
+          <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-4">
+            Ready to modernize your phone orders?
           </h2>
           <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
-            We're onboarding a limited number of restaurants for early access.
+            We're onboarding select restaurants for early access.
           </p>
           <button className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
             <span className="text-sm md:text-base">Join the Waitlist</span>
             <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
@@ -247,9 +358,10 @@ const Index = () => {
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm font-semibold">Zayup</span>
+            <span className="text-xs text-primary">OS</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © 2025 Zayup Inc.
+            © 2025 Zayup Inc. — Technology meets efficiency.
           </p>
         </div>
       </footer>

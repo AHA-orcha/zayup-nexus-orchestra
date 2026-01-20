@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Phone, PhoneOff, ShoppingCart, Mic, Pizza, X, Plus, Minus } from "lucide-react";
 import { OrderItem } from "./OrderSummary";
 
+// Props now defined below
+
 interface PizzaBolisDemoProps {
   isExpanded: boolean;
   isActive: boolean;
@@ -9,6 +11,7 @@ interface PizzaBolisDemoProps {
   orderItems: OrderItem[];
   onStart: () => void;
   onStop: () => void;
+  onSimulationClick?: () => void;
 }
 
 const PizzaBolisDemo = ({
@@ -18,6 +21,7 @@ const PizzaBolisDemo = ({
   orderItems,
   onStart,
   onStop,
+  onSimulationClick,
 }: PizzaBolisDemoProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const total = orderItems.reduce((sum, item) => sum + item.price, 0);
@@ -85,10 +89,16 @@ const PizzaBolisDemo = ({
           <p className="text-bolis-brown font-medium text-sm md:text-base mb-3">
             Tap to try voice ordering
           </p>
-          <div className="flex items-center justify-center gap-2 text-bolis-orange">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSimulationClick?.();
+            }}
+            className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-full bg-gradient-to-r from-bolis-orange to-bolis-yellow text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+          >
             <Phone className="w-4 h-4" />
-            <span className="text-xs font-semibold">LIVE DEMO</span>
-          </div>
+            <span>SIMULATE ORDER</span>
+          </button>
         </div>
       )}
 

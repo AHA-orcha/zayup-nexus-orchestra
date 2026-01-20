@@ -58,6 +58,13 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         glass: "hsl(var(--glass))",
+        bolis: {
+          orange: "hsl(var(--bolis-orange))",
+          yellow: "hsl(var(--bolis-yellow))",
+          red: "hsl(var(--bolis-red))",
+          cream: "hsl(var(--bolis-cream))",
+          brown: "hsl(var(--bolis-brown))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

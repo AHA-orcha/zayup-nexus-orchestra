@@ -11,7 +11,6 @@ interface PizzaBolisDemoProps {
   orderItems: OrderItem[];
   onStart: () => void;
   onStop: () => void;
-  onSimulationClick?: () => void;
 }
 
 const PizzaBolisDemo = ({
@@ -21,7 +20,6 @@ const PizzaBolisDemo = ({
   orderItems,
   onStart,
   onStop,
-  onSimulationClick,
 }: PizzaBolisDemoProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const total = orderItems.reduce((sum, item) => sum + item.price, 0);
@@ -83,23 +81,20 @@ const PizzaBolisDemo = ({
         </div>
       </div>
 
-      {/* Collapsed State - Just a teaser */}
+      {/* Collapsed State - Tap to expand and start */}
       {!isExpanded && (
-        <div className="p-4 md:p-6 text-center">
-          <p className="text-bolis-brown font-medium text-sm md:text-base mb-3">
+        <button
+          onClick={onStart}
+          className="w-full p-5 md:p-6 text-center hover:bg-bolis-cream/50 transition-colors"
+        >
+          <p className="text-bolis-brown font-medium text-sm md:text-base mb-2">
             Tap to try voice ordering
           </p>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onSimulationClick?.();
-            }}
-            className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-full bg-gradient-to-r from-bolis-orange to-bolis-yellow text-white font-semibold text-sm hover:opacity-90 transition-opacity"
-          >
+          <div className="flex items-center justify-center gap-2 text-bolis-orange">
             <Phone className="w-4 h-4" />
-            <span>SIMULATE ORDER</span>
-          </button>
-        </div>
+            <span className="text-sm font-semibold">Start Demo Call</span>
+          </div>
+        </button>
       )}
 
       {/* Expanded State - Full Demo Interface */}

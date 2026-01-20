@@ -370,7 +370,6 @@ const Index = () => {
       <div className="hidden lg:block">
         <LivePanel
           orderItems={orderItems}
-          logs={logs}
           isVisible={isActive}
           transcript={transcript}
         />

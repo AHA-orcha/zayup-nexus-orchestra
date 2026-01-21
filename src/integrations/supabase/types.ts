@@ -14,7 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cart_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_name: string
+          modifications: Json | null
+          price: number | null
+          quantity: number | null
+          session_id: string
+          size: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_name: string
+          modifications?: Json | null
+          price?: number | null
+          quantity?: number | null
+          session_id: string
+          size?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_name?: string
+          modifications?: Json | null
+          price?: number | null
+          quantity?: number | null
+          session_id?: string
+          size?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_email: string | null
+          customer_phone: string | null
+          external_id: string | null
+          id: string
+          items: Json
+          order_type: string | null
+          session_id: string | null
+          status: string | null
+          total_amount: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email?: string | null
+          customer_phone?: string | null
+          external_id?: string | null
+          id?: string
+          items?: Json
+          order_type?: string | null
+          session_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string | null
+          customer_phone?: string | null
+          external_id?: string | null
+          id?: string
+          items?: Json
+          order_type?: string | null
+          session_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

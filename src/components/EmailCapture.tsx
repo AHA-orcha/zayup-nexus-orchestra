@@ -3,15 +3,19 @@ import { useState } from "react";
 
 interface EmailCaptureProps {
   isVisible: boolean;
+  sessionId?: string;
+  onEmailCaptured?: (email: string) => void;
 }
 
-const EmailCapture = ({ isVisible }: EmailCaptureProps) => {
+const EmailCapture = ({ isVisible, sessionId, onEmailCaptured }: EmailCaptureProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      // Notify parent component
+      onEmailCaptured?.(email);
       setIsSubmitted(true);
     }
   };

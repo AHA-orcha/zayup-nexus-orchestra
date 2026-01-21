@@ -1,17 +1,39 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Zap, ArrowRight, Phone, ChevronDown, Globe, CheckCircle, Headphones } from "lucide-react";
+import { Zap, ArrowRight, ChevronDown, Globe, CheckCircle, Headphones } from "lucide-react";
 import PizzaBolisDemo from "@/components/PizzaBolisDemo";
 import LivePanel from "@/components/LivePanel";
 import EmailCapture from "@/components/EmailCapture";
 import { OrderItem } from "@/components/OrderSummary";
 import { LogEntry } from "@/components/AdminPanel";
 import { useVapi } from "@/hooks/useVapi";
+import { useRealtimeCart } from "@/hooks/useRealtimeCart";
 
 const DEMO_ASSISTANT_ID = "c8951f28-76ac-4c9e-ba73-b51fb6b8af6f";
 
 const Index = () => {
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  // Session ID for realtime cart sync
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
+  const [isRealtimeMode, setIsRealtimeMode] = useState(false);
+  
+  // Local state (fallback when not connected to backend)
+  const [localOrderItems, setLocalOrderItems] = useState<OrderItem[]>([]);
+  
+  // Realtime cart from database
+  const { items: realtimeItems, clearCart } = useRealtimeCart(
+    isRealtimeMode ? sessionIdRef.current : null
+  );
+  
+  // Use realtime items when connected, fallback to local state
+  const orderItems: OrderItem[] = isRealtimeMode 
+    ? realtimeItems.map(item => ({
+        id: item.id,
+        name: item.item_name,
+        modification: item.modifications?.join(', '),
+        price: Number(item.price)
+      }))
+    : localOrderItems;
+
   const [logs, setLogs] = useState<LogEntry[]>([
     { id: "1", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }), type: "SYSTEM", message: "Voice system initialized" },
     { id: "2", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }), type: "API", message: "Backend connection established" },
@@ -30,9 +52,12 @@ const Index = () => {
   }, []);
 
   const addOrderItem = useCallback((item: OrderItem) => {
-    setOrderItems(prev => [...prev, { ...item, id: Date.now().toString() }]);
+    // Only update local state - realtime items come from Supabase
+    if (!isRealtimeMode) {
+      setLocalOrderItems(prev => [...prev, { ...item, id: Date.now().toString() }]);
+    }
     addLog("MCP", `item-add: ${item.name}`);
-  }, [addLog]);
+  }, [addLog, isRealtimeMode]);
 
   // Handle MCP function calls from Vapi
   const handleFunctionCall = useCallback((name: string, params: Record<string, unknown>) => {
@@ -53,20 +78,24 @@ const Index = () => {
       case "modify_item":
       case "modify-item":
       case "modifyItem":
-        setOrderItems(prev => prev.map(item => 
-          item.name === (params.item_name as string || params.name as string)
-            ? { ...item, modification: params.modification as string }
-            : item
-        ));
+        if (!isRealtimeMode) {
+          setLocalOrderItems(prev => prev.map(item => 
+            item.name === (params.item_name as string || params.name as string)
+              ? { ...item, modification: params.modification as string }
+              : item
+          ));
+        }
         addLog("MCP", `Modified: ${params.item_name || params.name}`);
         break;
 
       case "remove_item":
       case "remove-item":
       case "removeItem":
-        setOrderItems(prev => prev.filter(item => 
-          item.name !== (params.item_name as string || params.name as string)
-        ));
+        if (!isRealtimeMode) {
+          setLocalOrderItems(prev => prev.filter(item => 
+            item.name !== (params.item_name as string || params.name as string)
+          ));
+        }
         addLog("MCP", `Removed: ${params.item_name || params.name}`);
         break;
 
@@ -145,9 +174,13 @@ const Index = () => {
 
   const handleStopCall = useCallback(() => {
     stopCall();
-    setOrderItems([]);
+    if (isRealtimeMode) {
+      clearCart();
+    } else {
+      setLocalOrderItems([]);
+    }
     setShowEmail(false);
-  }, [stopCall]);
+  }, [stopCall, isRealtimeMode, clearCart]);
 
   const isActive = status !== "idle";
 
@@ -275,7 +308,11 @@ const Index = () => {
           {/* Email Capture Overlay */}
           {showEmail && (
             <div className="mt-6 flex justify-center">
-              <EmailCapture isVisible={showEmail} />
+              <EmailCapture 
+                isVisible={showEmail} 
+                sessionId={sessionIdRef.current}
+                onEmailCaptured={(email) => addLog("API", `Email captured: ${email}`)}
+              />
             </div>
           )}
         </div>
